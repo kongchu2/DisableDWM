@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import dwm_module,subprocess,sys
+import dwm_module,subprocess,sys,atexit,time
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -66,6 +66,7 @@ class Ui_MainWindow(object):
         self.DWMON.setText(_translate("MainWindow", "ON"))
         self.DWMManager.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:600;\">DWM Manager</span></p></body></html>"))
         self.DWMStatus.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">DWM : <span>ON</span></p></body></html>"))
+
     def on(self):
         _translate = QtCore.QCoreApplication.translate
         self.textBrowser.clear()
@@ -77,9 +78,9 @@ class Ui_MainWindow(object):
         elif a == 'ERROR_DWM':
             self.textBrowser.append('DWM이 이미 실행되고 있습니다.')
         else:
+            self.textBrowser.append('\"pssuspend.exe\"파일을 같은 디렉토리에 넣으세요!!')
             self.textBrowser.append('DWM 활성화 실패..')
-
-        
+            
     def off(self):
         _translate = QtCore.QCoreApplication.translate
         self.textBrowser.clear()
@@ -91,7 +92,18 @@ class Ui_MainWindow(object):
         elif a == 'ERROR_DWM':
             self.textBrowser.append('DWM이 이미 종료되었습니다.')
         else:
+            self.textBrowser.append('\"pssuspend.exe\"파일을 같은 디렉토리에 넣으세요!!')
             self.textBrowser.append('DWM 비활성화 실패..')
+    
+    def closeEvent(self, event):
+            close = QtWidgets.QMessageBox.question(self,
+                                         "QUIT",
+                                         "Are you sure want to stop process?",
+                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if close == QtWidgets.QMessageBox.Yes:
+                event.accept()
+            else:
+                event.ignore()
 
 if __name__ == "__main__":
     output =  subprocess.getoutput

@@ -1,4 +1,5 @@
-import os,time,DWMManager,psutil
+import os,time,psutil
+
 def DWMstate(answer):
     chkDWM = 'False'
     for process in psutil.process_iter():
