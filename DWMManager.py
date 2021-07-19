@@ -1,11 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import dwm_module,subprocess,sys,atexit,time
+import dwm_module,subprocess,sys,time
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(300, 400)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(Ui_MainWindow,self).__init__()
+        self.setupUi()
+
+    def setupUi(self):
+        self.setObjectName("MainWindow")
+        self.resize(300, 400)
+        self.show()
+        self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
         self.DWMOFF = QtWidgets.QPushButton(self.centralwidget)
         self.DWMOFF.setGeometry(QtCore.QRect(180, 320, 75, 23))
@@ -45,20 +50,20 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.DWMStatus.setFont(font)
         self.DWMStatus.setObjectName("DWMStatus")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 300, 21))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(self)
         self.DWMON.clicked.connect(self.on)
         self.DWMOFF.clicked.connect(self.off)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        QtCore.QMetaObject.connectSlotsByName(self)
+        
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -94,22 +99,17 @@ class Ui_MainWindow(object):
         else:
             self.textBrowser.append('\"pssuspend.exe\"파일을 같은 디렉토리에 넣으세요!!')
             self.textBrowser.append('DWM 비활성화 실패..')
-    
-    def closeEvent(self, event):
-            close = QtWidgets.QMessageBox.question(self,
-                                         "QUIT",
-                                         "Are you sure want to stop process?",
-                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-            if close == QtWidgets.QMessageBox.Yes:
-                event.accept()
-            else:
-                event.ignore()
+
+    def closeEvent(MainWindow, event):
+        print('DWM활성화')
+        dwm_module.DWMstate('ON')
+        time.sleep(1)
 
 if __name__ == "__main__":
     output =  subprocess.getoutput
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
     sys.exit(app.exec_())
+    
+
+    
